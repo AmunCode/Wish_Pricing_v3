@@ -13,8 +13,8 @@ LOGS_PATH = "//jeg-api1/API/Transfer/Wish/Outbox/Price/Logs/"
 current_file = ""
 
 for file in glob.glob(FILE_PATH + "e20Wireless_Price*.csv"):
-     current_file = file
-     print(file)
+    current_file = file
+    print(file)
 
 headers = {
     'content-type': "application/json",
@@ -94,7 +94,7 @@ def main():
 
         def run_manual_api():
             """
-            allows use to run trigger an price API update from the GUI
+            allows use to trigger an price API update from the GUI
             :return: None
             """
             sku_data_manual = []

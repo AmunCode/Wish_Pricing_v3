@@ -1,7 +1,8 @@
 import requests
 import time
 
-# payload = "{\"variations\":[{\"price\":{\"amount\":109.98,\"currency_code\":\"USD\"},\"id\":\"62b5ca9efa18ac7f90fd86ce\"}]}"
+# payload_base = "{\"variations\":[{\"price\":{\"amount\":109.98,\"currency_code\":\"USD\"},\"id\":\"62b5ca9efa18ac7f90fd86ce\"}]}"
+# print(payload_base)
 
 LOGS_PATH = "//jeg-api1/API/Transfer/Wish/Outbox/Price/Logs/"
 url = "https://merchant.wish.com/api/v3/products/"
@@ -23,10 +24,6 @@ def price_update(success_list: list, error_list: list, sku_data: any, token: str
     :param current_file: the current file being processed
     :return: None
     """
-    headers = {
-        'content-type': "application/json",
-        'authorization': "Bearer " + token
-    }
 
     print(sku_data.columns)
 
@@ -61,6 +58,27 @@ def print_logs(logs_path: str, error_list: list, success_list: list, log_type: s
         with open(logs_path + "success_log.txt", "a") as file:
             for success in success_list:
                 file.write(str(success) + "\n")
+
+
+headers = {
+        'content-type': "application/json",
+        'authorization': "Bearer 35601379c4e74f9083e0f4a1e10af3b4"
+    }
+
+product_id = '62b5ca9efa18ac7f90fd86ce'
+price = '109.98'
+variation_id = '62b5ca9efa18ac7f90fd86ce'
+request_url = url + product_id
+payload = f"{payload1}{price}{payload2}{variation_id}{payload3}"
+print(request_url)
+print(payload)
+
+response = requests.request("PUT", request_url, data=payload, headers=headers)
+print(response)
+
+print(response.text)
+
+
 
 
 
