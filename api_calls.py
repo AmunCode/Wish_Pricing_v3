@@ -19,24 +19,26 @@ def price_update(success_list: list, error_list: list, sku_data: any, token: str
     :param success_list: list holding successful API calls
     :param error_list: list holding unsuccessful API Calls
     :param sku_data: Pandas DataFrame with all the SKU and corresponding prices
-    :param url: API endpoint
-    :param payload: data to be sent on each API call
+    :param token: auth token for API calls
     :param current_file: the current file being processed
     :return: None
     """
-
-    print(sku_data.columns)
+    headers = {
+        'content-type': "application/json",
+        'authorization': "Bearer " + token
+    }
 
     for count in range(len(sku_data)):
-        product_id = sku_data.productID
-        price = sku_data.price
-        variation_id = sku_data.variationID
-        request_url = url + product_id
+        product_id = sku_data.productID[count]
+        price = sku_data.price[count]
+        variation_id = sku_data.variationID[count]
+        request_url = f"{url}{product_id}"
         payload = f"{payload1}{price}{payload2}{variation_id}{payload3}"
         print(payload)
 
         response = requests.request("PUT", request_url, data=payload, headers=headers)
         time.sleep(1)
+
         print(response)
         if response.ok:
             success_list.append((sku_data.sku[count], sku_data.price[count], response.status_code, time.ctime()
@@ -59,24 +61,6 @@ def print_logs(logs_path: str, error_list: list, success_list: list, log_type: s
             for success in success_list:
                 file.write(str(success) + "\n")
 
-
-headers = {
-        'content-type': "application/json",
-        'authorization': "Bearer 35601379c4e74f9083e0f4a1e10af3b4"
-    }
-
-product_id = '62b5ca9efa18ac7f90fd86ce'
-price = '109.98'
-variation_id = '62b5ca9efa18ac7f90fd86ce'
-request_url = url + product_id
-payload = f"{payload1}{price}{payload2}{variation_id}{payload3}"
-print(request_url)
-print(payload)
-
-response = requests.request("PUT", request_url, data=payload, headers=headers)
-print(response)
-
-print(response.text)
 
 
 
