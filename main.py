@@ -94,7 +94,7 @@ def main():
 
         def run_manual_api():
             """
-            allows use to trigger an price API update from the GUI
+            allows use to trigger a price API update from the GUI
             :return: None
             """
             sku_data_manual = []
