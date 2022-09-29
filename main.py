@@ -19,7 +19,7 @@ for file in glob.glob(FILE_PATH + "e20Wireless_Price*.csv"):
 headers = {
     'content-type': "application/json",
     'authorization': "Bearer 35601379c4e74f9083e0f4a1e10af3b4"
-    }
+}
 
 
 def main():
