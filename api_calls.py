@@ -4,7 +4,8 @@ import time
 # payload_base = "{\"variations\":[{\"price\":{\"amount\":109.98,\"currency_code\":\"USD\"},\"id\":\"62b5ca9efa18ac7f90fd86ce\"}]}"
 # print(payload_base)
 
-LOGS_PATH = "//jeg-api1/API/Transfer/Wish/Outbox/Price/Logs/"
+# LOGS_PATH = "//jeg-api1/API/Transfer/Wish/Outbox/Price/Logs/"
+LOGS_PATH = ""
 url = "https://merchant.wish.com/api/v3/products/"
 payload1 = "{\"variations\":[{\"price\":{\"amount\":"
 
@@ -15,7 +16,7 @@ payload3 = "\"}]}"
 
 def price_update(success_list: list, error_list: list, sku_data: any, token: str, current_file: str) -> None:
     """
-    API post for Wish pricing updates.
+    API posts for Wish pricing updates.
     :param success_list: list holding successful API calls
     :param error_list: list holding unsuccessful API Calls
     :param sku_data: Pandas DataFrame with all the SKU and corresponding prices
