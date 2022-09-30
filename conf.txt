@@ -1,0 +1,1 @@
+{"token": "test", "FILE_PATH": "//jeg-api1/API/Transfer/Wish/Outbox/Price/", "DESTINATION_PATH": "//jeg-api1/API/Transfer/Wish/Outbox/Price/Processed/", "LOGS_PATH": ""}

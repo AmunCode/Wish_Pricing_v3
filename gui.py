@@ -1,3 +1,4 @@
+import json
 import tkinter as tk
 import requests
 import glob
@@ -6,24 +7,26 @@ import shutil
 import time
 import api_calls as api
 
-FILE_PATH = "//jeg-api1/API/Transfer/Wish/Outbox/Price/"
-DESTINATION_PATH = "//jeg-api1/API/Transfer/Wish/Outbox/Price/Processed/"
+# FILE_PATH = "//jeg-api1/API/Transfer/Wish/Outbox/Price/"
+# DESTINATION_PATH = "//jeg-api1/API/Transfer/Wish/Outbox/Price/Processed/"
 # LOGS_PATH = "//jeg-api1/API/Transfer/Wish/Outbox/Price/Logs/"
-LOGS_PATH = ""
+# LOGS_PATH = ""
 
-current_file = ""
-
-for file in glob.glob(FILE_PATH + "e20Wireless_Price*.csv"):
-    current_file = file
-    print(file)
-
-headers = {
-    'content-type': "application/json",
-    'authorization': "Bearer 35601379c4e74f9083e0f4a1e10af3b4"
-}
+# headers = {
+#     'content-type': "application/json",
+#     'authorization': "Bearer 35601379c4e74f9083e0f4a1e10af3b4"
+# }
 
 
-def make_gui():
+def make_gui(config: dict):
+    logs_path = config['LOGS_PATH']
+    file_path = config['FILE_PATH']
+    destination_path = config['DESTINATION_PATH']
+    current_file = ""
+
+    for file in glob.glob(file_path + "e20Wireless_Price*.csv"):
+        current_file = file
+        print(file)
     # open config file to retrieve token, then concatenate for validation
     with open("config.txt") as config_file:
         token = config_file.read()
@@ -43,21 +46,21 @@ def make_gui():
 
     # if the token is valid
     if auth_ver_response.ok:
-        with open(LOGS_PATH + "success_log.txt", "a") as success_file:
+        with open(logs_path + "success_log.txt", "a") as success_file:
             success_file.write(f"Authorized: token valid {time.ctime()} \n")
 
         # JSON to be pushed on each API call
         sku_data = []
-        for sku_file in glob.glob(FILE_PATH + "e20Wireless_Price*.csv"):
+        for sku_file in glob.glob(file_path + "e20Wireless_Price*.csv"):
             sku_data = pd.read_csv(sku_file)  # reads SKU data from file into a pandas dataFrame
             shutil.move(sku_file,
-                        DESTINATION_PATH)  # moves SKU file to a different folder once data is loaded
+                        destination_path)  # moves SKU file to a different folder once data is loaded
 
         # calls a function to update the price of each SKU via Wish API.
         api.price_update(success_list, error_list, sku_data, token, current_file)
     else:
         # only executes is the token in the config file is invalid
-        with open(LOGS_PATH + "error_log.txt", "a") as error_file:
+        with open(logs_path + "error_log.txt", "a") as error_file:
             error_file.write(
                 f"Not authorized: token invalid {time.ctime()} {current_file.split('/')[-1][6:]} \n")
 
@@ -70,8 +73,8 @@ def make_gui():
             new_token = input_token.get()
             write_new_token(new_token)
 
-            with open("config.txt") as file:
-                new_token = file.read()
+            with open("conf.txt") as file:
+                new_token = json.loads(file.read())['token']
                 new_token_verification_clone = "Bearer " + new_token
 
             # Verify if the new token is valid.
@@ -92,8 +95,9 @@ def make_gui():
                         :param updated_token:
                         :return: None
                         """
-            with open("config.txt", "w") as file:
-                file.write(updated_token)
+            config['token'] = updated_token
+            with open("conf.txt", "w") as file:
+                file.write(json.dumps(config))
 
         def run_manual_api():
             """
@@ -102,9 +106,9 @@ def make_gui():
                         """
             sku_data_manual = []
             # upload the data file
-            for file in glob.glob(FILE_PATH + "e20Wireless_Price*.csv"):
+            for file in glob.glob(file_path + "e20Wireless_Price*.csv"):
                 sku_data_manual = pd.read_csv(file)
-                shutil.move(file, DESTINATION_PATH)
+                shutil.move(file, destination_path)
             # calls API to update prices.
             api.price_update(success_list, error_list, sku_data, token, current_file)
 
